@@ -1,0 +1,27 @@
+name: Compile Python 3.16
+
+on:
+  workflow_dispatch: # Permet de lancer la compilation en un clic
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Récupérer le code source
+        uses: actions/checkout@v4
+        with:
+          depth: 1
+
+      - name: Lancer la compilation C++ de Python 3.16
+        run: |
+          .\PCbuild\build.bat -e -c Release
+
+      - name: Préparer les fichiers compilés
+        run: |
+          .\python.bat PC\layout --preset-default --copy .\Python316-Precompiled
+
+      - name: Créer le lien de téléchargement (Artifact)
+        uses: actions/upload-artifact@v4
+        with:
+          name: Python-3.16-Windows
+          path: .\Python316-Precompiled\
